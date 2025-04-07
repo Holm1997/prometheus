@@ -1,0 +1,14 @@
+- name: Terst playbook
+  hosts: main
+  become: yes
+
+  tasks:
+
+    - name: Create user
+      user:
+       user: test
+       group: test
+       groups: sudo
+       shell: /sbin/nologin
+       createhome: no
+      delegate_to: localhost

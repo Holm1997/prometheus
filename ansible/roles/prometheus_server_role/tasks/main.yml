@@ -1,0 +1,7 @@
+---
+- name: Unzip tar file with prometheus binaries
+  shell: |
+    tar -xzf prometheus-3.3.0-rc.0.linux-amd64.tar.gz
+    rm prometheus-3.3.0-rc.0.linux-amd64.tar.gz
+    
+  
