@@ -1,0 +1,19 @@
+---
+- name: Copy binary file
+  copy:
+    src: node_exporter
+    dest: /usr/bin
+    owner: prometheus
+    group: prometheus
+    mode: '0770'
+
+- name: Copy service config file
+  copy:
+    src: node_exporter.service
+    dest: /etc/systemd/system
+
+- name: Reload systemd daemon, enable and start node exporter service
+  shell: |
+    systemctl daemon-reload
+    systemctl enable node_exporter.service
+    systemctl start node_exporter.service
