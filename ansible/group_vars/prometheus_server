@@ -1,0 +1,6 @@
+ansible_user: root
+ansible_private_key_file: /root/.ssh/id_rsa
+
+bot_token: '8086932935:AAFOoX4oHj12UddSIvWaGbiFGI8As5VJH64'
+chat_id: -4672151132
+

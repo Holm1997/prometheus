@@ -1,0 +1,14 @@
+[Unit]
+Description= Alertmanager Service
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=prometheus
+Type=simple
+WorkingDirectory=/etc/alertmanager/
+ExecStart=/usr/bin/alertmanager --config.file=/etc/alertmanager/alertmanager.yml
+
+[Install]
+WantedBy=multi-user.target
+

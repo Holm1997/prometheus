@@ -1,2 +1,5 @@
-[main]
-localhost
+[prometheus_server]
+192.168.61.129 
+
+[node_exporter_linux]
+192.168.61.129 

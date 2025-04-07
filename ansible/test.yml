@@ -1,14 +1,15 @@
 - name: Terst playbook
-  hosts: main
+  hosts: prometheus_server
   become: yes
 
   tasks:
-
-    - name: Create user
-      user:
-       user: test
-       group: test
-       groups: sudo
-       shell: /sbin/nologin
-       createhome: no
-      delegate_to: localhost
+    - name: Create dirs
+      file:
+        path: '{{ item }}'
+        state: directory
+        owner: test
+        group: test
+      loop:
+        - /etc/bla1
+        - /etc/bla2
+      delegate_to: 127.0.0.1

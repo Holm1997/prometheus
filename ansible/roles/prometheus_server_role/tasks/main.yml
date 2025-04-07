@@ -1,7 +1,83 @@
 ---
-- name: Unzip tar file with prometheus binaries
-  shell: |
-    tar -xzf prometheus-3.3.0-rc.0.linux-amd64.tar.gz
-    rm prometheus-3.3.0-rc.0.linux-amd64.tar.gz
+- name: Update and install musl for Grafana
+  apt:
+    update_cache: true
+    name: musl
+
+
+- name: Create group
+  group:
+    name: prometheus
+    state: present
+
+
+- name: Create user
+  user:
+    user: prometheus
+    group: prometheus
+    shell: /sbin/nologin
+    createhome: no
+
     
-  
+- name: Create Prometheus directories
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: prometheus
+    group: prometheus
+  loop:
+    - /etc/prometheus
+    - /var/lib/prometheus
+    - /etc/alertmanager
+    - /etc/alertmanager/templates
+
+
+- name: Copy config files and binaries
+  copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    owner: prometheus
+    group: prometheus
+    mode: '0770'
+  loop:
+    - { src: prometheus, dest: /usr/bin }
+    - { src: promtool, dest: /usr/bin }
+    - { src: alertmanager, dest: /usr/bin }
+    - { src: amtool, dest: /usr/bin }
+    - { src: alert_rules.yml, dest: /etc/prometheus }
+    - { src: telegram.tmpl, dest: /etc/alertmanager/templates }
+
+
+
+- name: Copy grafana
+  copy:
+    src: grafana-enterprise_11.6.0_amd64.deb
+    dest: /tmp
+
+
+- name: Install grafana
+  shell: dpkg -i /tmp/grafana-enterprise_11.6.0_amd64.deb
+
+      
+- name: Copy config templates
+  template:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    owner: prometheus
+    group: prometheus
+  loop:
+    - { src: templates/prometheus.j2, dest: /etc/prometheus/prometheus.yml }
+    - { src: templates/prometheus.service.j2, dest: /etc/systemd/system/prometheus.service } 
+    - { src: templates/alertmanager.j2, dest: /etc/alertmanager/alertmanager.yml }
+    - { src: templates/alertmanager.service.j2, dest: /etc/systemd/system/alertmanager.service }
+
+- name: Restart systemd daemon and start prometheus, grafana and alertmanager services
+  shell: |
+    systemctl daemon-reload
+    systemctl enable prometheus.service
+    systemctl start prometheus.service
+    systemctl enable grafana-server.service
+    systemctl start grafana-server.service
+    systemctl enable alertmanager.service
+    systemctl start alertmanager.service
+
