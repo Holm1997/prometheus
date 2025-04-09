@@ -1,0 +1,44 @@
+---
+- name: Create group
+  group:
+    name: loki
+    state: present
+
+- name: Create system user
+  user:
+    name: loki
+    shell: /sbin/nologin
+    group: loki
+    create_home: no
+
+- name: Move binary 
+  copy:
+    src: loki-linux-amd64
+    dest: /usr/bin
+    owner: loki
+    group: loki
+
+- name: Create loki config directory
+  file:
+    path: /etc/loki
+    state: directory
+
+- name: Create config file
+  template:
+    src: templates/loki-config.j2
+    dest: /etc/loki/loki-config.yml
+    owner: loki
+    group: loki
+
+- name: Create service file
+  copy:
+    src: loki.service
+    dest: /etc/systemd/system
+
+- name: Start Loki service
+  service:
+    name: loki
+    state: started
+    daemon_reload: true
+    enabled: true
+
