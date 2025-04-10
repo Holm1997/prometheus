@@ -1,4 +1,5 @@
 - name: Install Loki server
   hosts: loki_server
+  become: yes
   roles:
     - ../roles/loki_server_role

@@ -1,5 +1,8 @@
 [prometheus_server]
-192.168.61.129 
+10.55.96.32
+
+[loki_server]
+10.55.96.32
 
 [node_exporter_linux]
 192.168.61.129 
