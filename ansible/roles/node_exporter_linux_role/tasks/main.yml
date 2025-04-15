@@ -1,4 +1,16 @@
 ---
+- name: Create group
+  group:
+    name: prometheus
+    state: present
+
+- name: Create user
+  user:
+    name: prometheus
+    group: prometheus
+    shell: /sbin/nologin
+    create_home: false
+
 - name: Copy binary file
   copy:
     src: node_exporter
@@ -13,7 +25,8 @@
     dest: /etc/systemd/system
 
 - name: Reload systemd daemon, enable and start node exporter service
-  shell: |
-    systemctl daemon-reload
-    systemctl enable node_exporter.service
-    systemctl start node_exporter.service
+  service:
+    name: node_exporter
+    enabled: true
+    state: started
+    daemon_reload: true
