@@ -11,4 +11,19 @@
     name: ./tmp/fluent-bit_4.0.0_amd64.deb
     update_cache: yes
 
+- name: Copy parsers.conf 
+  copy:
+    src: parsers.conf
+    dest: /etc/fluent-bit
+
+- name: Copy fluent-bit.conf
+  template:
+    copy: templates/fluent-bit.j2
+    dest: /etc/fluent-bit
+
+- name: Restart fluent-bit
+  service:
+    name: fluent-bit
+    state: restarted
+
 

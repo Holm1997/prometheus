@@ -1,0 +1,80 @@
+[SERVICE]
+    flush        1
+    daemon       Off
+    log_level    info
+    parsers_file parsers.conf
+    plugins_file plugins.conf
+    http_server  Off
+    http_listen  0.0.0.0
+    http_port    2020
+    storage.metrics on
+[INPUT]
+    Name             tail
+    Tag              postgresql-17-log
+    Path             /var/log/postgresql/postgresql-17-main.log
+    Parser           postgresql-17-parser
+    DB               /var/log/postgresql/postgresql-17-main.log.db
+    Refresh_Interval 10
+[INPUT]
+    Name             tail
+    Tag              nginx-log
+    Path             /var/log/nginx/access.log
+    Parser           nginx
+    DB               /var/log/nginx/access.log.db
+    Refresh_Interval 10
+[FILTER]
+    Name             modify
+    Match            postgresql-17-log
+    Condition        Key_value_equals level СООБЩЕНИЕ
+    Set              level LOG
+    Move_to_start    level
+[FILTER]
+    Name             modify
+    Match            postgresql-17-log
+    Condition        Key_value_equals level ПОДСКАЗКА
+    Set              level INFO
+    Move_to_start    level
+[FILTER]
+    Name             modify
+    Match            postgresql-17-log
+    Condition        Key_value_equals level ОШИБКА
+    Set              level ERROR
+    Move_to_start    level
+[FILTER]
+    Name             modify
+    Match            postgresql-17-log
+    Condition        Key_value_equals level ОПЕРАТОР
+    Set              level DETAIL
+    Move_to_start    level
+[FILTER]
+    Name             modify
+    Match            nginx-log
+    Condition        Key_value_equals code 4*
+    Add              level WARN
+    Move_to_start    level
+[FILTER]
+    Name             modify
+    Match            nginx-log
+    Condition        Key_value_equals code 5*
+    Move_to_start    level
+[FILTER]
+    Name             grep
+    Match            postgresql-17-log
+    Logical_Op       or
+    Regex            level INFO
+    Regex            level ERROR
+    Regex            level DETAIL
+    Regex            level LOG
+[OUTPUT]
+    Name        loki
+    Match       postgresql-17-log
+    Host        {{ loki_host }}
+    Port        {{ loki_port }}
+    Labels      app=postgresql-17,host={{ ansible_facts['hostname'] }}
+[OUTPUT]
+    Name        loki
+    Match       nginx-log
+    Host        {{ loki_host }}
+    Port        {{ loki_port }}
+    Labels      app=nginx, host={{ ansible_facts['hostname'] }}
+
