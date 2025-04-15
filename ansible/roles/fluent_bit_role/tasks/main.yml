@@ -1,0 +1,14 @@
+---
+- name: Copy package fluent-bit
+  copy:
+    src: fluent-bit_4.0.0_amd64.deb
+    dest: /tmp
+    mode: "0770"
+    owner: root
+
+- name: Install package fluent-bit
+  apt:
+    name: ./tmp/fluent-bit_4.0.0_amd64.deb
+    update_cache: yes
+
+
