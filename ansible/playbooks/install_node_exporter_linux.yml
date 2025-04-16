@@ -1,4 +1,5 @@
 - name: Install Node Exporter Linux
   hosts: node_exporter_linux
+  become: yes
   roles:
     - ../roles/node_exporter_linux_role

@@ -1,4 +1,5 @@
 - name: Install Fluent-bit
   hosts: fluent_bit
+  become: yes
   roles:
     - ../roles/fluent_bit_role

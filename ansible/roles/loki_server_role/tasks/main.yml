@@ -17,6 +17,7 @@
     dest: /usr/bin
     owner: loki
     group: loki
+    mode: '0700'
 
 - name: Create loki config directory
   file:

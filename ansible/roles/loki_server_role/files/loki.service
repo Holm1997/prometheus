@@ -4,10 +4,10 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-User=prometheus
-Group=prometheus
+User=loki
+Group=loki
 Type=simple
-ExecStart=/usr/bin/loki \
+ExecStart=/usr/bin/loki-linux-amd64 \
         --config.file /etc/loki/loki-config.yml
 
 [Install]
