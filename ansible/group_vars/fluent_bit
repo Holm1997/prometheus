@@ -1,7 +1,7 @@
-ansible_user: root
+ansible_user: administrator
 ansible_private_key_file: /root/.ssh/id_rsa
 
 
 
-loki_server: 10.55.96.32
+loki_host: 10.55.96.32
 loki_port: 3100
