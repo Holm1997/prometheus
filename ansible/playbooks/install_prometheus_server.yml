@@ -1,4 +1,5 @@
 - name: Install Prometheus server
   hosts: prometheus_server
+  become: yes
   roles:
     - ../roles/prometheus_server_role 

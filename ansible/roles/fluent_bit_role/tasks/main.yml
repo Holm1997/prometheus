@@ -18,8 +18,8 @@
 
 - name: Copy fluent-bit.conf
   template:
-    copy: templates/fluent-bit.j2
-    dest: /etc/fluent-bit
+    src: templates/fluent-bit.j2
+    dest: /etc/fluent-bit/fluent-bit.conf
 
 - name: Restart fluent-bit
   service:
